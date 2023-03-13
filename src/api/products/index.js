@@ -7,6 +7,7 @@ import multer from "multer"
 import { v2 as cloudinary } from "cloudinary"
 import { CloudinaryStorage } from "multer-storage-cloudinary"
 import q2m from "query-to-mongo"
+import { messageToSend, sendEmail } from "../../../utils/email.js"
 
 const productRouter = express.Router()
 
@@ -113,7 +114,7 @@ productRouter.get("/:productId", async (req, res, next) => {
   try {
     const product = await productModel.findById(req.params.productId).populate({
       path: "poster",
-      select: "username",
+      select: ["email", "username"],
     })
     if (product) {
       res.send(product)
@@ -157,27 +158,18 @@ productRouter.get(
     }
   }
 )
+productRouter.post("/send", async (req, res, next) => {
+  try {
+    const { sellerEmail, buyerEmail, subject, message } = req.body
 
-// productRouter.put("/:productId", JWTAuthMiddleware, async (req, res, next) => {
-//   try {
-//     const product = await productModel.findById(req.params.productId);
-//     if (product) {
-//       const updatedProduct = await productModel.findByIdAndUpdate(
-//         req.params.productId,
-//         req.body,
-//         { new: true }
-//       );
-//       res.send(updatedProduct);
-//     } else {
-//       next(
-//         createError(404, `product with id ${req.params.productId} not found!`)
-//       );
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// });
+    console.log(req.body)
+    const newText = messageToSend(subject.toUpperCase(), buyerEmail, message)
+    await sendEmail(sellerEmail, subject, newText)
+    res.send("Email sent")
+  } catch (error) {
+    next(error)
+  }
+})
 
 productRouter.delete(
   "/:productId",
