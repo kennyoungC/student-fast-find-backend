@@ -162,7 +162,6 @@ productRouter.post("/send", async (req, res, next) => {
   try {
     const { sellerEmail, buyerEmail, subject, message } = req.body
 
-    console.log(req.body)
     const newText = messageToSend(subject.toUpperCase(), buyerEmail, message)
     await sendEmail(sellerEmail, subject, newText)
     res.send("Email sent")
