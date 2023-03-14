@@ -90,6 +90,18 @@ userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
+userRouter.get("/all", async (req, res, next) => {
+  try {
+    const all = await userModel.find()
+    console.log(all)
+    const emailAndUsername = all.map((user) => {
+      return { email: user.email, username: user.username }
+    })
+    res.send(emailAndUsername)
+  } catch (error) {
+    next(error)
+  }
+})
 
 userRouter.get("/me/products", JWTAuthMiddleware, async (req, res, next) => {
   try {
