@@ -90,7 +90,7 @@ userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
-userRouter.get("/all", async (req, res, next) => {
+userRouter.get("/all", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const all = await userModel.find()
     console.log(all)
@@ -195,6 +195,23 @@ userRouter.delete(
     }
   }
 )
+// userRouter.delete("/:userId", async (req, res, next) => {
+//   try {
+//     const deletedUser = await userModel.findByIdAndDelete(req.params.userId);
+//     // find all products under this user and also remove from database
+//     const products = await ProductModel.find({ poster: req.params.userId });
+//     const productIds = products.map((product) => product._id);
+//     await ProductModel.deleteMany({ _id: { $in: productIds } });
+
+//     if (deletedUser) {
+//       res.send({ message: "User deleted successfully!" });
+//     } else {
+//       next(createError(404, `User with id ${req.params.userId} not found!`));
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 userRouter.post("/login", async (req, res, next) => {
   try {

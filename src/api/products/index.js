@@ -25,7 +25,7 @@ const cloudinaryUploader = multer({
       multerNext(null, true)
     }
   },
-  limits: { fileSize: 1 * 1024 * 1024 }, // file size
+  limits: { fileSize: 1 * 5120 * 5120 }, // file size
 }).single("image")
 
 productRouter.post(
